@@ -1,0 +1,33 @@
+<div>
+    <mat-toolbar color="primary">
+        <a mat-button [routerLink]="['/']">
+            <mat-icon>home</mat-icon>
+            <span>Homebudget</span>
+        </a>
+        <button mat-button [matMenuTriggerFor]="cadastros">
+            <span>Cadastros</span>
+        </button>
+        <button mat-button [matMenuTriggerFor]="extratos">
+            <span>Extratos</span>
+        </button>
+        <mat-menu #cadastros="matMenu">
+            <a mat-menu-item [routerLink]="['/control-accounts']">
+                <span>Contas Bancarias</span>
+            </a>
+            <a mat-menu-item [routerLink]="['/chart-accounts']">
+                <span>Plano Contas</span>
+            </a>
+        </mat-menu>
+        <mat-menu #extratos="matMenu">
+            <a mat-menu-item [routerLink]="['/upload-extract']">
+                <mat-icon>upload</mat-icon>
+                <span>Upload</span>
+            </a>
+            <a mat-menu-item [routerLink]="['/reconcile-extract']">
+                <mat-icon>check</mat-icon>
+                <span>Conciliacao</span>
+            </a>
+        </mat-menu>
+
+    </mat-toolbar>
+</div>

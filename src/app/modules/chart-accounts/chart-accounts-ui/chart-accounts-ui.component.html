@@ -1,0 +1,12 @@
+<p>chart-accounts-ui works! {{crudMode}} - List Size {{dataList.length}}</p>
+<div *ngIf="crudMode === 'list' ">
+    <app-chart-accounts-list [crudMode]="crudMode"
+                             [dataList]="dataList"
+                             (gotoForm)="gotoForm.emit()">
+    </app-chart-accounts-list>
+</div>
+<div *ngIf="crudMode === 'form' ">
+    <app-chart-accounts-form [crudMode]="crudMode"
+                             (gotoList)="gotoList.emit()">
+    </app-chart-accounts-form>
+</div>

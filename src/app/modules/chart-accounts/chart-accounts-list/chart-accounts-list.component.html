@@ -1,0 +1,38 @@
+<p>chart-accounts-list works! {{crudMode}}</p>
+<button (click)='goForm()'> Edit </button>
+<button (click)='search()'> Search </button>
+
+<mat-table class="mat-elevation-z8" [dataSource]="dataList"
+        matSort matSortActive="code" matSortDirection="asc" matSortDisableClear>
+
+    <ng-container matColumnDef="id">
+
+        <mat-header-cell *matHeaderCellDef>Id</mat-header-cell>
+
+        <mat-cell *matCellDef="let account">{{account.id}}</mat-cell>
+
+    </ng-container>
+
+    <ng-container matColumnDef="code">
+
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Codigo</mat-header-cell>
+
+        <mat-cell *matCellDef="let account">{{account.code}}</mat-cell>
+
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+
+        <mat-header-cell *matHeaderCellDef>Descricao</mat-header-cell>
+
+        <mat-cell *matCellDef="let account">{{account.description}}</mat-cell>
+
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+</mat-table>
+
+<mat-paginator [length]="20" [pageSize]="3" [pageSizeOptions]="[3, 5, 7]"></mat-paginator>
