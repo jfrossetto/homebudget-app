@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.dev.js",
+    "serve:k8s": "ng serve --proxy-config proxy.k8s.js",   
     "build": "ng build",
+    "build:k8s": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

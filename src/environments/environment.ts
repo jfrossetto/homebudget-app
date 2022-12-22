@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  urlBase: 'http://localhost:8080/v1'
+  urlBase: '/v1'
 };
 
 /*
