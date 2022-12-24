@@ -30,9 +30,6 @@ export class ChartAccountsService {
           .set('Authorization', 'token-api')
           .set('Content-Type', 'application/json')
           .set('Accept', 'application/json');
-    //headers.set('Access-Control-Allow-Origin', '*');    
-    //headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-    //headers.set('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
 
     return this.http
       .get<Page<IChartAccount>>(`${this.contextUrl}`, { headers, params });

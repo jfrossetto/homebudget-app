@@ -20,7 +20,7 @@ export class ChartAccountsContainerComponent implements OnInit {
 
   ngOnInit(): void {
     this.crudStore.gotoList();
-    //this.crudStore.search();
+    //this.crudStore.search(3, 0);
   }
 
   gotoForm() {

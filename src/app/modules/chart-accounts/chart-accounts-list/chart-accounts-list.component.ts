@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, AfterViewInit, Output, EventEmitter, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { ChartAccountsStoreService, IChartAccount } from 'src/app/core';
 import { ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -31,14 +31,24 @@ export class ChartAccountsListComponent implements AfterViewInit {
 
     merge(this.sort.sortChange, this.paginator.page)
     .pipe(
-      tap(() => this.search())
+      tap(() => {
+        console.log('tap table')
+        this.search()
+      })
     )
     .subscribe();
+
+    this.search();
+
   }
 
   goForm(): void {
-    //this.gotoForm.emit();
-    this.crudStore.gotoForm();
+    this.gotoForm.emit();
+    //this.crudStore.gotoForm();
+  }
+
+  getRecord(entity: IChartAccount): void {
+    console.log(entity);
   }
 
   search(): void {
