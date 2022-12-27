@@ -16,8 +16,8 @@ export class ChartAccountsListComponent implements AfterViewInit {
   @Input() public crudMode: string;
   @Input() public dataList: IChartAccount[];
 
-  @Output() gotoForm = new EventEmitter<void>();
-  
+  @Output() getEntityById = new EventEmitter<string>();
+
   displayedColumns: string[] = ['code', 'description', 'id'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -43,12 +43,12 @@ export class ChartAccountsListComponent implements AfterViewInit {
   }
 
   goForm(): void {
-    this.gotoForm.emit();
-    //this.crudStore.gotoForm();
+    this.getEntityById.emit('');
   }
 
   getRecord(entity: IChartAccount): void {
     console.log(entity);
+    this.getEntityById.emit(entity.id);
   }
 
   search(): void {

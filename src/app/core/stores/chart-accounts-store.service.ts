@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ChartAccountsService } from '../services/chart-accounts.service';
-import { Page } from '../models/page';
+import { FormDetails, FormMode } from '../models/form-details';
 import { IChartAccount } from '../models/chart-account.model';
 import { BehaviorSubject, of, pipe } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
@@ -12,9 +12,11 @@ export class ChartAccountsStoreService {
 
   private readonly _crudMode = new BehaviorSubject<string>('');
   private readonly _dataList = new BehaviorSubject<IChartAccount[]>([]);
+  private readonly _formDetails = new BehaviorSubject<FormDetails<IChartAccount>>({mode: FormMode.add});
 
   readonly crudMode$ = this._crudMode.asObservable();
   readonly dataList$ = this._dataList.asObservable();
+  readonly formDetails$ = this._formDetails.asObservable();
 
   constructor(private service: ChartAccountsService) { }
 
@@ -34,16 +36,22 @@ export class ChartAccountsStoreService {
     this._dataList.next(data);
   }
 
+  private get formDetails(): FormDetails<IChartAccount> {
+    return this._formDetails.getValue();
+  }
+
   public gotoList() {
     this.crudMode = 'list';
   }
 
-  public gotoForm() {
+  public getEntityById(id: any) {
     this.crudMode = 'form';
+    this.service
+        .findById(id)
+        .subscribe(account => this._formDetails.next({mode: FormMode.update, entity: account}));
   }
 
   public search(pageSize: number, pageIndex: number) {
-    //this._dataList.next(TABLE_DATA);
     this.service
         .findAll(pageSize, pageIndex+1)
         .pipe(

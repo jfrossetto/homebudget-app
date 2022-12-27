@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { IChartAccount } from 'src/app/core';
+import { FormDetails, IChartAccount } from 'src/app/core';
 
 @Component({
   selector: 'app-chart-accounts-ui',
@@ -10,13 +10,18 @@ export class ChartAccountsUiComponent implements OnInit {
 
   @Input() public crudMode: string;
   @Input() public dataList: IChartAccount[];
+  @Input() public formDetails: FormDetails<IChartAccount>;
 
-  @Output() gotoForm = new EventEmitter<void>();
+  @Output() getEntityById = new EventEmitter<string>();
   @Output() gotoList = new EventEmitter<void>();
 
   constructor() {   }
 
   ngOnInit(): void {
+  }
+
+  getEntity(id: any) {
+    this.getEntityById.emit(id);
   }
 
 }

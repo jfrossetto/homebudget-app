@@ -12,19 +12,22 @@ export class ChartAccountsContainerComponent implements OnInit {
   
   crudMode$: Observable<any>;
   dataList$: Observable<any>;
+  formDetails$: Observable<any>;
 
   constructor(private crudStore: ChartAccountsStoreService) { 
     this.crudMode$ = this.crudStore.crudMode$;
     this.dataList$ = this.crudStore.dataList$;    
+    this.formDetails$ = this.crudStore.formDetails$;
   }
 
   ngOnInit(): void {
-    this.crudStore.gotoList();
+    this.gotoList();
+    //this.crudStore.gotoList();
     //this.crudStore.search(3, 0);
   }
 
-  gotoForm() {
-    this.crudStore.gotoForm();
+  getEntityById(id: any) {
+    this.crudStore.getEntityById(id);
   }
 
   gotoList() {

@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { FormDetails, IChartAccount } from 'src/app/core';
 
 @Component({
   selector: 'app-chart-accounts-form',
@@ -7,7 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 })
 export class ChartAccountsFormComponent implements OnInit {
 
-  @Input() public crudMode: string;
+  @Input() public formDetails: FormDetails<IChartAccount>;
   @Output() gotoList = new EventEmitter<void>();
 
   constructor() { }
@@ -17,7 +18,6 @@ export class ChartAccountsFormComponent implements OnInit {
 
   goList(): void {
     this.gotoList.emit();
-    //this.crudStore.gotoForm();
   }
 
 

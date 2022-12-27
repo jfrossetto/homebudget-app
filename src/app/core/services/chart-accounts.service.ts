@@ -35,4 +35,16 @@ export class ChartAccountsService {
       .get<Page<IChartAccount>>(`${this.contextUrl}`, { headers, params });
   }
 
+  findById(id: any): Observable<IChartAccount> {
+
+    let headers = new HttpHeaders()
+          .set('Authorization', 'token-api')
+          .set('Content-Type', 'application/json')
+          .set('Accept', 'application/json');
+
+    return this.http
+      .get<IChartAccount>(`${this.contextUrl}/${id}`, { headers });
+    
+  }
+
 }
