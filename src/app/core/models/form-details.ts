@@ -3,6 +3,11 @@ export interface FormDetails<T> {
     entity?: T;    
 }
 
+export interface FormRequest<T> {
+    mode: FormMode;
+    id?: T;    
+}
+
 export enum FormMode {
     add,
     update,

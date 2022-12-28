@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ChartAccountsService } from '../services/chart-accounts.service';
-import { FormDetails, FormMode } from '../models/form-details';
+import { FormDetails, FormMode, FormRequest } from '../models/form-details';
 import { IChartAccount } from '../models/chart-account.model';
 import { BehaviorSubject, of, pipe } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
@@ -44,11 +44,26 @@ export class ChartAccountsStoreService {
     this.crudMode = 'list';
   }
 
-  public getEntityById(id: any) {
+  public gotoForm(request: FormRequest<string>) {
     this.crudMode = 'form';
+
+    if(request.mode === FormMode.add) {
+      this._formDetails.next({mode: FormMode.add, entity: {}});
+      return;
+    }
+
     this.service
-        .findById(id)
-        .subscribe(account => this._formDetails.next({mode: FormMode.update, entity: account}));
+      .findById(request.id)
+      .subscribe(account => this._formDetails.next({mode: request.mode, entity: account}));
+  }
+
+  public save(entity: IChartAccount, id?: string) {
+    console.log("store save")
+    if(id) {
+      this.service
+        .update(entity, id)
+        .subscribe(account => this.gotoList());
+    }
   }
 
   public search(pageSize: number, pageIndex: number) {

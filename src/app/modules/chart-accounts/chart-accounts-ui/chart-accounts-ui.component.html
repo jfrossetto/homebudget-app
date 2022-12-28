@@ -1,7 +1,7 @@
 <p>chart-accounts-ui works! {{crudMode}} - List Size {{dataList.length}} - Form details {{formDetails.entity?.id}}</p>
 <div *ngIf="crudMode === 'list' ">
     <app-chart-accounts-list [dataList]="dataList"
-                             (getEntityById)="getEntity($event)">
+                             (gotoForm)="gotoForm.emit($event)">
     </app-chart-accounts-list>
 </div>
 <div *ngIf="crudMode === 'form' ">

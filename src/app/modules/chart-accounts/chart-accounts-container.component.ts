@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ChartAccountsStoreService } from '../../core';
+import { ChartAccountsStoreService, FormRequest } from '../../core';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -26,8 +26,8 @@ export class ChartAccountsContainerComponent implements OnInit {
     //this.crudStore.search(3, 0);
   }
 
-  getEntityById(id: any) {
-    this.crudStore.getEntityById(id);
+  gotoForm(request: FormRequest<string>) {
+    this.crudStore.gotoForm(request);
   }
 
   gotoList() {

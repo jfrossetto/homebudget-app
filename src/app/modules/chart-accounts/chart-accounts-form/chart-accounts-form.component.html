@@ -1,2 +1,27 @@
-<p>chart-accounts-form works!  {{formDetails.entity?.id}} - {{formDetails.entity?.description}} </p>
+<p>chart-accounts-form works!  {{formDetails.mode}} : {{formDetails.entity?.id}} - {{formDetails.entity?.description}} </p>
 <button (click)='goList()'> List </button>
+<p></p>
+<div>
+    <form [formGroup]="form">
+
+      <div>
+        <mat-form-field>
+          <mat-label>Codigo</mat-label>
+          <input matInput formControlName="code" name="code" required />
+          <mat-error *ngIf="form.controls['code'].hasError('required')">Codigo obrigatório</mat-error>
+        </mat-form-field>
+        <p></p>
+        <mat-form-field>
+          <mat-label>Descrição</mat-label>
+          <input matInput formControlName="description" name="description" required />
+          <mat-error *ngIf="form.controls['description'].hasError('required')">Descrição obrigatório</mat-error>
+        </mat-form-field>
+
+      </div>
+    </form>
+</div>
+<p></p>
+<div>
+    <button mat-raised-button (click)="saveEntity()" [disabled]="form.invalid" color="primary" type="submit">Save</button>
+    <button mat-raised-button (click)="resetForm()">Reset</button>
+</div>

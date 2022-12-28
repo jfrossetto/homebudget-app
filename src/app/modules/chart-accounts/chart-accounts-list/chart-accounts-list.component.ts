@@ -1,5 +1,5 @@
 import { Component, Input, AfterViewInit, Output, EventEmitter, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { ChartAccountsStoreService, IChartAccount } from 'src/app/core';
+import { ChartAccountsStoreService, FormMode, FormRequest, IChartAccount } from 'src/app/core';
 import { ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -16,7 +16,7 @@ export class ChartAccountsListComponent implements AfterViewInit {
   @Input() public crudMode: string;
   @Input() public dataList: IChartAccount[];
 
-  @Output() getEntityById = new EventEmitter<string>();
+  @Output() gotoForm = new EventEmitter<FormRequest<string>>();
 
   displayedColumns: string[] = ['code', 'description', 'id'];
 
@@ -43,12 +43,12 @@ export class ChartAccountsListComponent implements AfterViewInit {
   }
 
   goForm(): void {
-    this.getEntityById.emit('');
+    this.gotoForm.emit({mode: FormMode.add});
   }
 
   getRecord(entity: IChartAccount): void {
     console.log(entity);
-    this.getEntityById.emit(entity.id);
+    this.gotoForm.emit({mode: FormMode.update, id: entity.id});
   }
 
   search(): void {
