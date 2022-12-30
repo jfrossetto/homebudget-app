@@ -6,7 +6,12 @@
 
       <div>
         <mat-form-field>
-          <mat-label>Codigo</mat-label>
+          <mat-label>Conta Pai</mat-label>
+          <input matInput formControlName="parentCode" name="parentCode" />
+        </mat-form-field>
+        <p></p>
+        <mat-form-field>
+          <mat-label>Conta</mat-label>
           <input matInput formControlName="code" name="code" required />
           <mat-error *ngIf="form.controls['code'].hasError('required')">Codigo obrigatório</mat-error>
         </mat-form-field>

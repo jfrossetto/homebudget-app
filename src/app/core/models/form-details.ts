@@ -1,6 +1,6 @@
 export interface FormDetails<T> {
     mode: FormMode;
-    entity?: T;    
+    entity: T;
 }
 
 export interface FormRequest<T> {

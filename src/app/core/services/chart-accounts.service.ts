@@ -59,4 +59,16 @@ export class ChartAccountsService {
     
   }
 
+  add(payload: IChartAccount): Observable<IChartAccount> {
+
+    let headers = new HttpHeaders()
+          .set('Authorization', 'token-api')
+          .set('Content-Type', 'application/json')
+          .set('Accept', 'application/json');
+
+    return this.http
+      .post<IChartAccount>(`${this.contextUrl}`, payload, { headers });
+    
+  }
+
 }

@@ -5,17 +5,17 @@
 <mat-table class="mat-elevation-z8" [dataSource]="dataList"
         matSort matSortActive="code" matSortDirection="asc" matSortDisableClear>
 
-    <ng-container matColumnDef="id">
+    <ng-container matColumnDef="parentCode">
 
-        <mat-header-cell *matHeaderCellDef>Id</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Conta Pai</mat-header-cell>
 
-        <mat-cell *matCellDef="let account">{{account.id}}</mat-cell>
+        <mat-cell *matCellDef="let account">{{account.parentCode}}</mat-cell>
 
     </ng-container>
 
     <ng-container matColumnDef="code">
 
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Codigo</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Conta</mat-header-cell>
 
         <mat-cell *matCellDef="let account">{{account.code}}</mat-cell>
 

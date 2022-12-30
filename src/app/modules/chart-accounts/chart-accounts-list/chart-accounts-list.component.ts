@@ -18,7 +18,7 @@ export class ChartAccountsListComponent implements AfterViewInit {
 
   @Output() gotoForm = new EventEmitter<FormRequest<string>>();
 
-  displayedColumns: string[] = ['code', 'description', 'id'];
+  displayedColumns: string[] = ['code', 'description', 'parentCode'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -32,7 +32,7 @@ export class ChartAccountsListComponent implements AfterViewInit {
     merge(this.sort.sortChange, this.paginator.page)
     .pipe(
       tap(() => {
-        console.log('tap table')
+        console.log('tap table {}', this.sort.active)
         this.search()
       })
     )

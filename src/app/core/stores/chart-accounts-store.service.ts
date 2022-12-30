@@ -12,7 +12,7 @@ export class ChartAccountsStoreService {
 
   private readonly _crudMode = new BehaviorSubject<string>('');
   private readonly _dataList = new BehaviorSubject<IChartAccount[]>([]);
-  private readonly _formDetails = new BehaviorSubject<FormDetails<IChartAccount>>({mode: FormMode.add});
+  private readonly _formDetails = new BehaviorSubject<FormDetails<IChartAccount>>({mode: FormMode.add, entity: {} as IChartAccount});
 
   readonly crudMode$ = this._crudMode.asObservable();
   readonly dataList$ = this._dataList.asObservable();
@@ -48,7 +48,7 @@ export class ChartAccountsStoreService {
     this.crudMode = 'form';
 
     if(request.mode === FormMode.add) {
-      this._formDetails.next({mode: FormMode.add, entity: {}});
+      this._formDetails.next({mode: FormMode.add, entity: {} as IChartAccount});
       return;
     }
 
@@ -57,11 +57,28 @@ export class ChartAccountsStoreService {
       .subscribe(account => this._formDetails.next({mode: request.mode, entity: account}));
   }
 
+  /*
   public save(entity: IChartAccount, id?: string) {
     console.log("store save")
     if(id) {
       this.service
         .update(entity, id)
+        .subscribe(account => this.gotoList());
+    }
+  }
+  */
+  public save(payload: IChartAccount, mode: FormMode, id?: string) {
+    console.log("store save")
+    if(mode === FormMode.update) {
+      console.log("save update")
+      this.service
+        .update(payload, id)
+        .subscribe(account => this.gotoList());
+    }
+    if(mode === FormMode.add) {
+      console.log("save add")
+      this.service
+        .add(payload)
         .subscribe(account => this.gotoList());
     }
   }
