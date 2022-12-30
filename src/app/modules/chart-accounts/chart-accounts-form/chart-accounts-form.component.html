@@ -5,10 +5,18 @@
     <form [formGroup]="form">
 
       <div>
+
         <mat-form-field>
           <mat-label>Conta Pai</mat-label>
-          <input matInput formControlName="parentCode" name="parentCode" />
+          <input matInput formControlName="parentCode" name="parentCode" type="text"  
+                  [matAutocomplete]="acParentCode"/>
+          <mat-autocomplete #acParentCode="matAutocomplete">
+            <mat-option *ngFor="let option of optionsParentCode$ | async" [value]="option.code">
+              <small>{{option.code}}-{{option.description}}</small>
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
+
         <p></p>
         <mat-form-field>
           <mat-label>Conta</mat-label>

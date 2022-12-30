@@ -71,4 +71,19 @@ export class ChartAccountsService {
     
   }
 
+  findAutocomplete(search: string): Observable<IChartAccount[]> {
+
+    let params = new HttpParams()
+          .set('search', search);
+
+    let headers = new HttpHeaders()
+          .set('Authorization', 'token-api')
+          .set('Content-Type', 'application/json')
+          .set('Accept', 'application/json');
+
+    return this.http
+      .get<IChartAccount[]>(`${this.contextUrl}/autocomplete`, { headers, params });
+    
+  }
+
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ChartAccountsService } from '../services/chart-accounts.service';
 import { FormDetails, FormMode, FormRequest } from '../models/form-details';
 import { IChartAccount } from '../models/chart-account.model';
-import { BehaviorSubject, of, pipe } from 'rxjs';
+import { BehaviorSubject, Observable, of, pipe } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 
 @Injectable({
@@ -51,22 +51,12 @@ export class ChartAccountsStoreService {
       this._formDetails.next({mode: FormMode.add, entity: {} as IChartAccount});
       return;
     }
-
+    
     this.service
       .findById(request.id)
       .subscribe(account => this._formDetails.next({mode: request.mode, entity: account}));
   }
 
-  /*
-  public save(entity: IChartAccount, id?: string) {
-    console.log("store save")
-    if(id) {
-      this.service
-        .update(entity, id)
-        .subscribe(account => this.gotoList());
-    }
-  }
-  */
   public save(payload: IChartAccount, mode: FormMode, id?: string) {
     console.log("store save")
     if(mode === FormMode.update) {
@@ -93,6 +83,10 @@ export class ChartAccountsStoreService {
           })
         )
         .subscribe(accounts => this._dataList.next(accounts));
+  }
+
+  public findAutocomplete(search: string): Observable<IChartAccount[]> {
+    return this.service.findAutocomplete(search);
   }
 
 }

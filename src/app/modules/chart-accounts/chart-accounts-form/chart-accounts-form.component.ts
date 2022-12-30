@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, SimpleChanges, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { ChartAccountsStoreService, FormDetails, FormMode, IChartAccount } from 'src/app/core';
 
 @Component({
@@ -18,10 +20,23 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
     description:  ['', [Validators.required]]
   });
 
+  optionsParentCode$: Observable<IChartAccount[]>;
+
   constructor(private formBuilder: FormBuilder,
               private crudStore: ChartAccountsStoreService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  
+    this.optionsParentCode$ = this.form.controls['parentCode'].valueChanges.pipe(
+      startWith(''),
+      debounceTime(500),
+      distinctUntilChanged(),
+      switchMap((val) => {
+        return this.crudStore.findAutocomplete(val);
+      })
+    );
+
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.formDetails && changes.formDetails.currentValue) {
