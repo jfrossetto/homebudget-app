@@ -6,6 +6,7 @@
 </div>
 <div *ngIf="crudMode === 'form' ">
     <app-chart-accounts-form [formDetails]="formDetails"
+                             [entitiesAutocomplete]="entitiesAutocomplete"
                              (gotoList)="gotoList.emit()">
     </app-chart-accounts-form>
 </div>

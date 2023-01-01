@@ -3,7 +3,8 @@ import { ChartAccountsService } from '../services/chart-accounts.service';
 import { FormDetails, FormMode, FormRequest } from '../models/form-details';
 import { IChartAccount } from '../models/chart-account.model';
 import { BehaviorSubject, Observable, of, pipe } from 'rxjs';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { catchError, finalize, map, switchMap } from 'rxjs/operators';
+import { EntitiesAutocomplete } from '../models/entities-autocomplete';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,12 @@ export class ChartAccountsStoreService {
   private readonly _crudMode = new BehaviorSubject<string>('');
   private readonly _dataList = new BehaviorSubject<IChartAccount[]>([]);
   private readonly _formDetails = new BehaviorSubject<FormDetails<IChartAccount>>({mode: FormMode.add, entity: {} as IChartAccount});
+  private readonly _entitiesAutocomplete = new BehaviorSubject<EntitiesAutocomplete>({});
 
   readonly crudMode$ = this._crudMode.asObservable();
   readonly dataList$ = this._dataList.asObservable();
   readonly formDetails$ = this._formDetails.asObservable();
+  readonly entitiesAutocomplete$ = this._entitiesAutocomplete.asObservable();
 
   constructor(private service: ChartAccountsService) { }
 
@@ -40,21 +43,35 @@ export class ChartAccountsStoreService {
     return this._formDetails.getValue();
   }
 
+  private get entitiesAutocomplete(): EntitiesAutocomplete {
+    return this._entitiesAutocomplete.getValue();
+  }
+
   public gotoList() {
     this.crudMode = 'list';
   }
 
   public gotoForm(request: FormRequest<string>) {
-    this.crudMode = 'form';
 
     if(request.mode === FormMode.add) {
+      this.crudMode = 'form';
       this._formDetails.next({mode: FormMode.add, entity: {} as IChartAccount});
       return;
     }
     
     this.service
-      .findById(request.id)
-      .subscribe(account => this._formDetails.next({mode: request.mode, entity: account}));
+      .findById(request.id).pipe(
+        switchMap(account => {
+          this._formDetails.next({mode: request.mode, entity: account});
+          this.crudMode = 'form';
+          return this.service.findAutocomplete({ code:account.parentCode });
+        }),
+        map(ac => this._entitiesAutocomplete.next({account: ac[0]})),
+        catchError(ex => {
+          console.log("error gotoForm ", ex.error.error.message);
+          throw ex;
+        }))
+      .subscribe();
   }
 
   public save(payload: IChartAccount, mode: FormMode, id?: string) {
@@ -86,8 +103,12 @@ export class ChartAccountsStoreService {
   }
 
   public findAutocomplete(search: string): Observable<IChartAccount[]> {
-    return this.service.findAutocomplete(search);
+    return this.service.findAutocomplete({ search: search });
   }
 
+}
+
+function tap(arg0: (account: any) => void): import("rxjs").OperatorFunction<IChartAccount, unknown> {
+  throw new Error('Function not implemented.');
 }
 

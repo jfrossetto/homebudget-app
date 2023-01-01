@@ -6,4 +6,3 @@ export interface IChartAccount {
     parent: boolean;
     level: number;
 }
-  

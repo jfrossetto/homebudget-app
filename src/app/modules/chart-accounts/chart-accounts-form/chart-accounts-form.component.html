@@ -8,10 +8,10 @@
 
         <mat-form-field>
           <mat-label>Conta Pai</mat-label>
-          <input matInput formControlName="parentCode" name="parentCode" type="text"  
+          <input matInput formControlName="parentCodeAc" name="parentCode" type="text"  
                   [matAutocomplete]="acParentCode"/>
-          <mat-autocomplete #acParentCode="matAutocomplete">
-            <mat-option *ngFor="let option of optionsParentCode$ | async" [value]="option.code">
+          <mat-autocomplete #acParentCode="matAutocomplete" [displayWith]="displayAutocomplete">
+            <mat-option *ngFor="let option of optionsParentCode$ | async" [value]="option">
               <small>{{option.code}}-{{option.description}}</small>
             </mat-option>
           </mat-autocomplete>

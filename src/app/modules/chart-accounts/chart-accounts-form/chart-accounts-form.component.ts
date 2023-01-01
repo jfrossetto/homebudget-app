@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, SimpleChanges, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
-import { ChartAccountsStoreService, FormDetails, FormMode, IChartAccount } from 'src/app/core';
+import { ChartAccountsStoreService, EntitiesAutocomplete, FormDetails, FormMode, IChartAccount } from 'src/app/core';
 
 @Component({
   selector: 'app-chart-accounts-form',
@@ -12,12 +12,14 @@ import { ChartAccountsStoreService, FormDetails, FormMode, IChartAccount } from 
 export class ChartAccountsFormComponent implements OnInit, OnChanges {
 
   @Input() public formDetails: FormDetails<IChartAccount>;
+  @Input() public entitiesAutocomplete: EntitiesAutocomplete;
+
   @Output() gotoList = new EventEmitter<void>();
   
   form = this.formBuilder.group({
-    code:         ['', [Validators.required]],
-    parentCode:   [''],
-    description:  ['', [Validators.required]]
+    code:          ['', [Validators.required]],
+    parentCodeAc:  [{}],
+    description:   ['', [Validators.required]]
   });
 
   optionsParentCode$: Observable<IChartAccount[]>;
@@ -27,26 +29,37 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
   
-    this.optionsParentCode$ = this.form.controls['parentCode'].valueChanges.pipe(
+    this.optionsParentCode$ = this.form.controls['parentCodeAc'].valueChanges.pipe(
       startWith(''),
       debounceTime(500),
       distinctUntilChanged(),
       switchMap((val) => {
-        return this.crudStore.findAutocomplete(val);
+        if( typeof val === 'string' ) {
+          console.log(' search ac', val);
+          return this.crudStore.findAutocomplete(val);
+        }
+        console.log(" val = ", val , typeof(val))
+        //return of(val);
+        return of([{...val}]);
       })
     );
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.formDetails && changes.formDetails.currentValue) {
       if(this.formDetails.mode === FormMode.add) {
-        console.log("changes add");
+        console.log("ngOnChanges add");
         this.form.reset();
         return;
       }
-      console.log("changes edit");        
+      console.log("ngOnChanges edit");        
       this.form.patchValue(this.formDetails.entity);
+    }
+    if (changes.entitiesAutocomplete && changes.entitiesAutocomplete.currentValue) {
+      console.log("ngOnChanges entitiesAutocomplete");
+      this.form.controls['parentCodeAc']
+        .setValue([{code: this.entitiesAutocomplete.account?.code,
+                   description: this.entitiesAutocomplete.account?.description}]);
     }
   }
 
@@ -61,13 +74,20 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
   }
 
   saveEntity(): void {
-    console.log("saved")    
     if (this.form.valid) {
-      const payload = {...this.form.getRawValue()};
+      const payload = {...this.form.getRawValue() as IChartAccount,
+                        parentCode: this.form.get('parentCodeAc')?.value.code};
+      console.log("saved payload: {}", payload);
       //this.crudStore.save(payload, this.formDetails.entity?.id);
       this.crudStore.save(payload, this.formDetails.mode, this.formDetails.entity?.id);
     }
   }
 
+  displayAutocomplete(obj: any): string {
+    console.log(" obj = ", obj, typeof(obj))    
+    //return obj ? `${obj.code}-${obj.description}` : '';
+    return obj[0] ? `${obj[0].code}-${obj[0].description}` : 
+        obj ? `${obj.code}-${obj.description}` : '';
+  }
 
 }

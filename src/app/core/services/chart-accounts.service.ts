@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Page } from '../models/page';
 import { IChartAccount } from '../models/chart-account.model'; 
 import { environment } from 'src/environments/environment';
+import { identifierModuleUrl } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root'
@@ -71,10 +72,17 @@ export class ChartAccountsService {
     
   }
 
-  findAutocomplete(search: string): Observable<IChartAccount[]> {
+  findAutocomplete(param: { code?: string,
+                            search?: string }): Observable<IChartAccount[]> {
 
     let params = new HttpParams()
-          .set('search', search);
+
+    if (param.code) {
+      params = params.set('code', param.code ? param.code : '');
+    }
+    if (param.search) {
+      params = params.set('search', param.search ? param.search : '')
+    }
 
     let headers = new HttpHeaders()
           .set('Authorization', 'token-api')

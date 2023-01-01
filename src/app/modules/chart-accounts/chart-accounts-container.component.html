@@ -2,6 +2,7 @@
 <app-chart-accounts-ui [crudMode]="crudMode$ | async"
                        [dataList]="dataList$ | async"
                        [formDetails]="formDetails$ | async"
+                       [entitiesAutocomplete]="entitiesAutocomplete$ | async"
                        (gotoForm)="gotoForm($event)"
                        (gotoList)="gotoList()">
 </app-chart-accounts-ui>
