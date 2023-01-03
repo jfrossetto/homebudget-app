@@ -18,6 +18,7 @@ export class ChartAccountsListComponent implements AfterViewInit {
 
   @Output() gotoForm = new EventEmitter<FormRequest<string>>();
 
+  totalItens: number;
   displayedColumns: string[] = ['code', 'description', 'parentCode'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -26,6 +27,8 @@ export class ChartAccountsListComponent implements AfterViewInit {
   constructor(private crudStore: ChartAccountsStoreService) { }
 
   ngAfterViewInit(): void { 
+
+    this.totalItens = this.crudStore.totalItens;
     
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
@@ -52,7 +55,10 @@ export class ChartAccountsListComponent implements AfterViewInit {
   }
 
   search(): void {
+    console.log(" sort: ", this.sort);
     this.crudStore.search(this.paginator.pageSize, 
-                          this.paginator.pageIndex);
+                          this.paginator.pageIndex,
+                          this.sort.active,
+                          this.sort.direction);
   }
 }

@@ -3,8 +3,9 @@ import { ChartAccountsService } from '../services/chart-accounts.service';
 import { FormDetails, FormMode, FormRequest } from '../models/form-details';
 import { IChartAccount } from '../models/chart-account.model';
 import { BehaviorSubject, Observable, of, pipe } from 'rxjs';
-import { catchError, finalize, map, switchMap } from 'rxjs/operators';
+import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
 import { EntitiesAutocomplete } from '../models/entities-autocomplete';
+import { SortDirection } from '@angular/material/sort';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,8 @@ export class ChartAccountsStoreService {
   readonly dataList$ = this._dataList.asObservable();
   readonly formDetails$ = this._formDetails.asObservable();
   readonly entitiesAutocomplete$ = this._entitiesAutocomplete.asObservable();
+  
+  public totalItens: number = 0;
 
   constructor(private service: ChartAccountsService) { }
 
@@ -49,6 +52,8 @@ export class ChartAccountsStoreService {
 
   public gotoList() {
     this.crudMode = 'list';
+    this._formDetails.next({mode: FormMode.add, entity: {} as IChartAccount});
+    this._entitiesAutocomplete.next({});
   }
 
   public gotoForm(request: FormRequest<string>) {
@@ -56,6 +61,7 @@ export class ChartAccountsStoreService {
     if(request.mode === FormMode.add) {
       this.crudMode = 'form';
       this._formDetails.next({mode: FormMode.add, entity: {} as IChartAccount});
+      this._entitiesAutocomplete.next({});      
       return;
     }
     
@@ -64,9 +70,11 @@ export class ChartAccountsStoreService {
         switchMap(account => {
           this._formDetails.next({mode: request.mode, entity: account});
           this.crudMode = 'form';
-          return this.service.findAutocomplete({ code:account.parentCode });
+          return account.parentCode 
+              ? this.service.findAutocomplete({ code:account.parentCode })
+              : of([{} as IChartAccount]);
         }),
-        map(ac => this._entitiesAutocomplete.next({account: ac[0]})),
+        tap(parent => this._entitiesAutocomplete.next({account: parent[0]})),
         catchError(ex => {
           console.log("error gotoForm ", ex.error.error.message);
           throw ex;
@@ -90,12 +98,14 @@ export class ChartAccountsStoreService {
     }
   }
 
-  public search(pageSize: number, pageIndex: number) {
+  public search(pageSize: number, pageIndex: number,
+                sortBy: string, direction: SortDirection) {
     this.service
-        .findAll(pageSize, pageIndex+1)
+        .findAll(pageSize, pageIndex+1, sortBy, direction)
         .pipe(
           map(data => {
             console.log('total pages ', data.totalPages);
+            this.totalItens = data.totalItems;
             return data.items;
           })
         )
@@ -106,9 +116,5 @@ export class ChartAccountsStoreService {
     return this.service.findAutocomplete({ search: search });
   }
 
-}
-
-function tap(arg0: (account: any) => void): import("rxjs").OperatorFunction<IChartAccount, unknown> {
-  throw new Error('Function not implemented.');
 }
 

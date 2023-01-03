@@ -5,6 +5,7 @@ import { Page } from '../models/page';
 import { IChartAccount } from '../models/chart-account.model'; 
 import { environment } from 'src/environments/environment';
 import { identifierModuleUrl } from '@angular/compiler';
+import { SortDirection } from '@angular/material/sort';
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +22,14 @@ export class ChartAccountsService {
   constructor(private http: HttpClient) { }
 
   public findAll(pageSize: number = 3,
-                 pageIndex: number = 1): Observable<Page<IChartAccount>> {
+                 pageIndex: number = 1,
+                 sortBy: string, 
+                 direction: SortDirection): Observable<Page<IChartAccount>> {
 
     let params = new HttpParams()
           .set('pageSize', pageSize.toString())
-          .set('pageIndex', pageIndex.toString());
+          .set('pageIndex', pageIndex.toString())
+          .set('orderBy', sortBy+' '+direction);
 
     let headers = new HttpHeaders()
           .set('Authorization', 'token-api')

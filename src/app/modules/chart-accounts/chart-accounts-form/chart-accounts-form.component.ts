@@ -18,7 +18,7 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
   
   form = this.formBuilder.group({
     code:          ['', [Validators.required]],
-    parentCodeAc:  [{}],
+    parentCodeAc:  [''],
     description:   ['', [Validators.required]]
   });
 
@@ -39,7 +39,6 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
           return this.crudStore.findAutocomplete(val);
         }
         console.log(" val = ", val , typeof(val))
-        //return of(val);
         return of([{...val}]);
       })
     );
@@ -50,6 +49,7 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
       if(this.formDetails.mode === FormMode.add) {
         console.log("ngOnChanges add");
         this.form.reset();
+        this.form.controls['parentCodeAc'].setValue('');
         return;
       }
       console.log("ngOnChanges edit");        
@@ -58,8 +58,8 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
     if (changes.entitiesAutocomplete && changes.entitiesAutocomplete.currentValue) {
       console.log("ngOnChanges entitiesAutocomplete");
       this.form.controls['parentCodeAc']
-        .setValue([{code: this.entitiesAutocomplete.account?.code,
-                   description: this.entitiesAutocomplete.account?.description}]);
+        .setValue({code: this.entitiesAutocomplete.account?.code,
+                   description: this.entitiesAutocomplete.account?.description});
     }
   }
 
@@ -70,7 +70,6 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
   resetForm(): void {
     console.log("reset");
     this.crudStore.gotoForm({mode: FormMode.add});
-    //this.form.reset();
   }
 
   saveEntity(): void {
@@ -78,16 +77,14 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
       const payload = {...this.form.getRawValue() as IChartAccount,
                         parentCode: this.form.get('parentCodeAc')?.value.code};
       console.log("saved payload: {}", payload);
-      //this.crudStore.save(payload, this.formDetails.entity?.id);
       this.crudStore.save(payload, this.formDetails.mode, this.formDetails.entity?.id);
     }
   }
 
   displayAutocomplete(obj: any): string {
-    console.log(" obj = ", obj, typeof(obj))    
-    //return obj ? `${obj.code}-${obj.description}` : '';
-    return obj[0] ? `${obj[0].code}-${obj[0].description}` : 
-        obj ? `${obj.code}-${obj.description}` : '';
+    console.log(" display obj = ", obj, typeof(obj))    
+    return obj && obj.code && obj.description 
+              ? `${obj.code}-${obj.description}` : '';
   }
 
 }
