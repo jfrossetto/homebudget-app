@@ -1,38 +1,62 @@
-<p>chart-accounts-list works! {{crudMode}}</p>
-<button (click)='goForm()'> Edit </button>
-<button (click)='search()'> Search </button>
 
-<mat-table class="mat-elevation-z8" [dataSource]="dataList"
-        matSort matSortActive="code" matSortDirection="asc" matSortDisableClear>
+<div>
+    <mat-toolbar>
+        <span> Plano de Contas </span>
+        <span class="flex-spacer"></span>
+        <button mat-icon-button (click)='search()'>
+            <mat-icon>search</mat-icon>
+        </button>
+        <button mat-stroked-button color="primary" (click)='goForm()'> + Adiciona </button>
+    </mat-toolbar>
+</div>
 
-    <ng-container matColumnDef="parentCode">
+<div class="list-container">
 
-        <mat-header-cell *matHeaderCellDef>Conta Pai</mat-header-cell>
+    <!--
+    <div class="loading-shade" *ngIf="loading">
+        <mat-spinner></mat-spinner>
+    </div>
+    -->
+    <!-- <div class="mat-elevation-z8"> -->
+    <mat-table class="table-container" [dataSource]="listDetails.dataList" matSort matSortActive="code"
+        matSortDirection="asc" matSortDisableClear>
 
-        <mat-cell *matCellDef="let account">{{account.parentCode}}</mat-cell>
+        <ng-container matColumnDef="parentCode">
 
-    </ng-container>
+            <mat-header-cell *matHeaderCellDef>Conta Pai</mat-header-cell>
 
-    <ng-container matColumnDef="code">
+            <mat-cell *matCellDef="let account">{{account.parentCode}}</mat-cell>
 
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Conta</mat-header-cell>
+        </ng-container>
 
-        <mat-cell *matCellDef="let account">{{account.code}}</mat-cell>
+        <ng-container matColumnDef="code">
 
-    </ng-container>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Conta</mat-header-cell>
 
-    <ng-container matColumnDef="description">
+            <mat-cell *matCellDef="let account">{{account.code}}</mat-cell>
 
-        <mat-header-cell *matHeaderCellDef>Descricao</mat-header-cell>
+        </ng-container>
 
-        <mat-cell *matCellDef="let account">{{account.description}}</mat-cell>
+        <ng-container matColumnDef="description">
 
-    </ng-container>
+            <mat-header-cell *matHeaderCellDef>Descricao</mat-header-cell>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-cell *matCellDef="let account">{{account.description}}</mat-cell>
 
-    <mat-row *matRowDef="let row; columns: displayedColumns" (click)="getRecord(row)"></mat-row>
+        </ng-container>
 
-</mat-table>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
-<mat-paginator [length]="totalItens" [pageSize]="3" [pageSizeOptions]="[3, 5, 7]"></mat-paginator>
+        <mat-row *matRowDef="let row; columns: displayedColumns" (click)="getRecord(row)"></mat-row>
+
+    </mat-table>
+
+    <div class="list-footer">
+        <div class="paginator-table">
+            <mat-spinner *ngIf="loading" diameter="32"></mat-spinner>
+            <mat-paginator [length]="listDetails.totalItens" [showFirstLastButtons]="true"
+                [pageSize]="listDetails.lastPageSize" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+        </div>
+    </div>
+    
+</div>

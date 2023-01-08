@@ -1,5 +1,5 @@
 import { Component, Input, AfterViewInit, Output, EventEmitter, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { ChartAccountsStoreService, FormMode, FormRequest, IChartAccount } from 'src/app/core';
+import { ChartAccountsStoreService, FormMode, FormRequest, IChartAccount, ListDetails } from 'src/app/core';
 import { ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -8,14 +8,16 @@ import { merge } from 'rxjs';
 
 @Component({
   selector: 'app-chart-accounts-list',
+  styleUrls: ['./chart-accounts-list.component.css'],
   templateUrl: './chart-accounts-list.component.html'
   ,changeDetection: ChangeDetectionStrategy.OnPush  
 })
 export class ChartAccountsListComponent implements AfterViewInit {
 
   @Input() public crudMode: string;
-  @Input() public dataList: IChartAccount[];
-
+  @Input() public listDetails: ListDetails<IChartAccount>;
+  @Input() public loading: boolean;
+  
   @Output() gotoForm = new EventEmitter<FormRequest<string>>();
 
   totalItens: number;
@@ -28,8 +30,7 @@ export class ChartAccountsListComponent implements AfterViewInit {
 
   ngAfterViewInit(): void { 
 
-    this.totalItens = this.crudStore.totalItens;
-    
+    this.paginator.pageIndex = this.listDetails.lastPageIndex;
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
     merge(this.sort.sortChange, this.paginator.page)

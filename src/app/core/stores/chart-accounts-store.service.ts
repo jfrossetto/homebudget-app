@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable, of, pipe } from 'rxjs';
 import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
 import { EntitiesAutocomplete } from '../models/entities-autocomplete';
 import { SortDirection } from '@angular/material/sort';
+import { ListDetails } from '../models/list-details';
 
 @Injectable({
   providedIn: 'root'
@@ -13,16 +14,17 @@ import { SortDirection } from '@angular/material/sort';
 export class ChartAccountsStoreService {
 
   private readonly _crudMode = new BehaviorSubject<string>('');
-  private readonly _dataList = new BehaviorSubject<IChartAccount[]>([]);
+  private readonly _listDetails = new BehaviorSubject<ListDetails<IChartAccount>>({dataList: [], lastPageIndex:0, 
+                                                                                   lastPageSize: 5, totalItens: 0});
   private readonly _formDetails = new BehaviorSubject<FormDetails<IChartAccount>>({mode: FormMode.add, entity: {} as IChartAccount});
   private readonly _entitiesAutocomplete = new BehaviorSubject<EntitiesAutocomplete>({});
+  private readonly _loading = new BehaviorSubject<boolean>(false);
 
   readonly crudMode$ = this._crudMode.asObservable();
-  readonly dataList$ = this._dataList.asObservable();
+  readonly listDetails$ = this._listDetails.asObservable();
   readonly formDetails$ = this._formDetails.asObservable();
   readonly entitiesAutocomplete$ = this._entitiesAutocomplete.asObservable();
-  
-  public totalItens: number = 0;
+  readonly loading$ = this._loading.asObservable();
 
   constructor(private service: ChartAccountsService) { }
 
@@ -34,12 +36,8 @@ export class ChartAccountsStoreService {
     this._crudMode.next(mode);
   }
 
-  private get dataList(): IChartAccount[] {
-    return this._dataList.getValue();
-  }
-
-  private set dataList(data: IChartAccount[]) {
-    this._dataList.next(data);
+  private get listDetails(): ListDetails<IChartAccount> {
+    return this._listDetails.getValue();
   }
 
   private get formDetails(): FormDetails<IChartAccount> {
@@ -48,6 +46,14 @@ export class ChartAccountsStoreService {
 
   private get entitiesAutocomplete(): EntitiesAutocomplete {
     return this._entitiesAutocomplete.getValue();
+  }
+
+  private get loading(): boolean {
+    return this._loading.getValue();
+  }
+
+  private set loading(load: boolean) {
+    this._loading.next(load);
   }
 
   public gotoList() {
@@ -100,16 +106,18 @@ export class ChartAccountsStoreService {
 
   public search(pageSize: number, pageIndex: number,
                 sortBy: string, direction: SortDirection) {
+    this.loading = true;                  
     this.service
         .findAll(pageSize, pageIndex+1, sortBy, direction)
         .pipe(
-          map(data => {
-            console.log('total pages ', data.totalPages);
-            this.totalItens = data.totalItems;
-            return data.items;
-          })
+          tap(data => {
+            console.log('total pages ', data.totalPages, ' items', data.totalItems);
+            this._listDetails.next({lastPageIndex: pageIndex, lastPageSize: pageSize,
+                                    totalItens: data.totalItems, dataList: data.items});
+          }),
+          finalize(() => this.loading = false)
         )
-        .subscribe(accounts => this._dataList.next(accounts));
+        .subscribe();
   }
 
   public findAutocomplete(search: string): Observable<IChartAccount[]> {

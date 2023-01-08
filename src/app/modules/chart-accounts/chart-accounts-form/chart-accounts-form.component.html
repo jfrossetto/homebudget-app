@@ -1,40 +1,57 @@
-<p>chart-accounts-form works!  {{formDetails.mode}} : {{formDetails.entity?.id}} - {{formDetails.entity?.description}} </p>
-<button (click)='goList()'> List </button>
-<p></p>
+
 <div>
-    <form [formGroup]="form">
+  <mat-toolbar>
+      <span> Plano de Contas </span>
+      <small> - {{formDetails.mode}} : {{formDetails.entity?.id}} </small>
+      <span class="flex-spacer"></span>
+      <button mat-stroked-button color="primary" (click)="resetForm()">+ Adiciona</button>
+  </mat-toolbar>
+</div>
 
-      <div>
+<div class="form-container">
 
-        <mat-form-field>
-          <mat-label>Conta Pai</mat-label>
-          <input matInput formControlName="parentCodeAc" name="parentCode" type="text"  
-                  [matAutocomplete]="acParentCode"/>
-          <mat-autocomplete #acParentCode="matAutocomplete" [displayWith]="displayAutocomplete">
-            <mat-option *ngFor="let option of optionsParentCode$ | async" [value]="option">
-              <small>{{option.code}}-{{option.description}}</small>
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
+    <form [formGroup]="form" style="width: 100%;">
 
-        <p></p>
-        <mat-form-field>
-          <mat-label>Conta</mat-label>
-          <input matInput formControlName="code" name="code" required />
-          <mat-error *ngIf="form.controls['code'].hasError('required')">Codigo obrigatório</mat-error>
-        </mat-form-field>
-        <p></p>
-        <mat-form-field>
-          <mat-label>Descrição</mat-label>
-          <input matInput formControlName="description" name="description" required />
-          <mat-error *ngIf="form.controls['description'].hasError('required')">Descrição obrigatório</mat-error>
-        </mat-form-field>
+      <div class="flex-row">
 
+        <div class="col-2">
+          <mat-form-field>
+            <mat-label>Conta Pai</mat-label>
+            <input matInput formControlName="parentCodeAc" name="parentCode" type="text" [matAutocomplete]="acParentCode" />
+            <mat-autocomplete #acParentCode="matAutocomplete" [displayWith]="displayAutocomplete"
+              (optionSelected)="selectedOption($event)">
+              <mat-option *ngFor="let option of optionsParentCode$ | async" [value]="option">
+                <small>{{option.code}}-{{option.description}}</small>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+
+        <div class="col-2">
+          <mat-form-field>
+            <mat-label>Conta</mat-label>
+            <input matInput formControlName="code" name="code" required />
+            <mat-error *ngIf="form.controls['code'].hasError('required')">Codigo obrigatório</mat-error>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <div class="flex-row">
+        <div class="col-4">
+          <mat-form-field>
+            <mat-label>Descrição</mat-label>
+            <input matInput formControlName="description" name="description" required />
+            <mat-error *ngIf="form.controls['description'].hasError('required')">Descrição obrigatório</mat-error>
+          </mat-form-field>
+        </div>
       </div>
     </form>
 </div>
-<p></p>
-<div>
-    <button mat-raised-button (click)="saveEntity()" [disabled]="form.invalid" color="primary" type="submit">Save</button>
-    <button mat-raised-button (click)="resetForm()">Reset</button>
+
+<div class="form-footer">
+  <div class="flex-row justify-space-between">
+    <button mat-stroked-button color="warn" (click)='goList()'>< Sair</button>
+    <button mat-raised-button (click)="saveEntity()" [disabled]="form.invalid" color="primary" type="submit">Salvar</button>    
+  </div>
 </div>

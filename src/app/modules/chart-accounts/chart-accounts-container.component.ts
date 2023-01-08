@@ -11,15 +11,17 @@ import { Observable } from 'rxjs';
 export class ChartAccountsContainerComponent implements OnInit {
   
   crudMode$: Observable<any>;
-  dataList$: Observable<any>;
+  listDetails$: Observable<any>;
   formDetails$: Observable<any>;
   entitiesAutocomplete$: Observable<any>;
+  loading$: Observable<any>;
 
   constructor(private crudStore: ChartAccountsStoreService) { 
     this.crudMode$ = this.crudStore.crudMode$;
-    this.dataList$ = this.crudStore.dataList$;    
+    this.listDetails$ = this.crudStore.listDetails$;
     this.formDetails$ = this.crudStore.formDetails$;
     this.entitiesAutocomplete$ = this.crudStore.entitiesAutocomplete$;
+    this.loading$ = this.crudStore.loading$;
   }
 
   ngOnInit(): void {

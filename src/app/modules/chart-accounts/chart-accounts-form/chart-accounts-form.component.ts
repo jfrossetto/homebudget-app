@@ -13,7 +13,8 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
 
   @Input() public formDetails: FormDetails<IChartAccount>;
   @Input() public entitiesAutocomplete: EntitiesAutocomplete;
-
+  @Input() public loading: boolean;
+  
   @Output() gotoList = new EventEmitter<void>();
   
   form = this.formBuilder.group({
@@ -87,4 +88,7 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
               ? `${obj.code}-${obj.description}` : '';
   }
 
+  selectedOption(event: any) {
+    console.log(" parent selected ", event.option.value.code, event);
+  }
 }

@@ -1,12 +1,16 @@
-<p>chart-accounts-ui works! {{crudMode}} - List Size {{dataList.length}} - Form details {{formDetails.entity?.id}}</p>
 <div *ngIf="crudMode === 'list' ">
-    <app-chart-accounts-list [dataList]="dataList"
+    <app-chart-accounts-list [listDetails]="listDetails"
+                             [loading]="loading"
                              (gotoForm)="gotoForm.emit($event)">
     </app-chart-accounts-list>
 </div>
 <div *ngIf="crudMode === 'form' ">
     <app-chart-accounts-form [formDetails]="formDetails"
                              [entitiesAutocomplete]="entitiesAutocomplete"
+                             [loading]="loading"
                              (gotoList)="gotoList.emit()">
     </app-chart-accounts-form>
 </div>
+<!--
+<p>chart-accounts-ui works! {{crudMode}} - List Size {{listDetails.dataList.length}} - Form details {{formDetails.entity.id}}</p>
+-->

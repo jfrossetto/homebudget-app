@@ -1,3 +1,6 @@
-export interface ListDetails {
-    lastPageIndex?: number;
+export interface ListDetails<T> {
+    dataList: T[];    
+    totalItens: number;    
+    lastPageIndex: number;
+    lastPageSize: number;
 }
