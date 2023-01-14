@@ -1,11 +1,13 @@
-import { Component, Input, AfterViewInit, Output, EventEmitter, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, Input, AfterViewInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ChartAccountsStoreService, FormMode, FormRequest, IChartAccount, ListDetails } from 'src/app/core';
 import { ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
-import { merge } from 'rxjs';
+import { catchError, filter, finalize, switchMap, tap } from 'rxjs/operators';
+import { merge, Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'src/app/shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-chart-accounts-list',
@@ -28,7 +30,8 @@ export class ChartAccountsListComponent implements AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private crudStore: ChartAccountsStoreService,
-              private _snackBar: MatSnackBar) { }
+              private _snackBar: MatSnackBar,
+              private dialog: MatDialog) { }
 
   ngAfterViewInit(): void { 
 
@@ -66,21 +69,33 @@ export class ChartAccountsListComponent implements AfterViewInit {
   }
 
   deleteAccount(entity: IChartAccount): void {
-    console.log(" delete account ", entity);
     this.crudStore.validateDelete(entity.id!).pipe(
       catchError((ex) => {
-        console.log("error to delete", ex.error.error);
+        console.log("cannot delete", ex.error.error);
         this.alert(ex.error.error.message);
         throw ex;
       }),
-      //ToDo modal to confirm delete 
-      switchMap(() => this.crudStore.deleteAccount(entity.id!)),
+      switchMap(() => this.confirmDelete()),
+      filter(confirm => confirm),
+      switchMap(() => {
+        console.log(" delete account ", entity);
+        return this.crudStore.deleteAccount(entity.id!)
+      }),
       finalize(() => {
         console.log(" finalize delete ");
         this.search();
       })
     )
     .subscribe();
+  }
+
+  confirmDelete(): Observable<any> {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      minWidth: 300,
+      hasBackdrop: true,
+      data: {message: "Exclui conta? "}
+    });
+    return dialogRef.afterClosed();
   }
 
   alert(msg: string) {

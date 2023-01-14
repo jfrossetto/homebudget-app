@@ -1,0 +1,14 @@
+<div mat-dialog-title class="flex-row">
+    <h2>
+        <mat-icon>error</mat-icon>
+        Confirma
+    </h2>
+</div>
+<div mat-dialog-content>
+    <h3>{{data.message}}</h3>
+</div>
+<div mat-dialog-actions>
+  <button mat-stroked-button color="primary" [mat-dialog-close]="false" cdkFocusInitial>Cancela</button>
+  <span class="flex-spacer"></span>
+  <button mat-stroked-button color="warn" [mat-dialog-close]="true">Confirma</button>
+</div>
