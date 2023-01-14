@@ -98,4 +98,44 @@ export class ChartAccountsService {
     
   }
 
+  findNextCode(parentCode: string): Observable<string> {
+
+    let params = new HttpParams()
+      .set('parentCode', parentCode ? parentCode : '');
+
+
+    let headers = new HttpHeaders()
+      .set('Authorization', 'token-api')
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json');
+
+    return this.http
+      .get<string>(`${this.contextUrl}/nextcode`, { headers, params });
+
+  }
+
+  delete(id: any): Observable<boolean> {
+
+    let headers = new HttpHeaders()
+          .set('Authorization', 'token-api')
+          .set('Content-Type', 'application/json')
+          .set('Accept', 'application/json');
+
+    return this.http
+      .delete<boolean>(`${this.contextUrl}/${id}`, { headers });
+    
+  }
+
+  validateDelete(id: any): Observable<any> {
+
+    let headers = new HttpHeaders()
+          .set('Authorization', 'token-api')
+          .set('Content-Type', 'application/json')
+          .set('Accept', 'application/json');
+
+    return this.http
+      .get<any>(`${this.contextUrl}/validate-delete/${id}`, { headers });
+    
+  }
+
 }

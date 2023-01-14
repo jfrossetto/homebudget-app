@@ -42,6 +42,10 @@ table {
     z-index: 999;
 }
 
+.action-column {
+    flex: 0.2 0.2 0%;
+}
+
 .form-container {
     position: relative;
     display: flex;
@@ -60,6 +64,20 @@ table {
     display: inherit !important;
     font-size: 16px;
 }
+
+//.mat-form-field-label-wrapper ~ .mat-input-element:disabled {
+//    background: rgba(0,0,0,.10);    
+//}
+
+/*
+.mat-input-element:disabled {
+    color: rgba(0,0,0,.70);
+}
+
+.mat-input-element:disabled ~ .mat-form-field-label-wrapper {
+    background: rgba(0,0,0,.10);    
+}
+*/
 
 .col-2 {
     flex: 0 0 22.5%;

@@ -3,8 +3,9 @@ import { ChartAccountsStoreService, FormMode, FormRequest, IChartAccount, ListDe
 import { ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { tap } from 'rxjs/operators';
+import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { merge } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-chart-accounts-list',
@@ -21,12 +22,13 @@ export class ChartAccountsListComponent implements AfterViewInit {
   @Output() gotoForm = new EventEmitter<FormRequest<string>>();
 
   totalItens: number;
-  displayedColumns: string[] = ['code', 'description', 'parentCode'];
+  displayedColumns: string[] = ['code', 'description', 'parentCode', 'actions'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private crudStore: ChartAccountsStoreService) { }
+  constructor(private crudStore: ChartAccountsStoreService,
+              private _snackBar: MatSnackBar) { }
 
   ngAfterViewInit(): void { 
 
@@ -61,5 +63,32 @@ export class ChartAccountsListComponent implements AfterViewInit {
                           this.paginator.pageIndex,
                           this.sort.active,
                           this.sort.direction);
+  }
+
+  deleteAccount(entity: IChartAccount): void {
+    console.log(" delete account ", entity);
+    this.crudStore.validateDelete(entity.id!).pipe(
+      catchError((ex) => {
+        console.log("error to delete", ex.error.error);
+        this.alert(ex.error.error.message);
+        throw ex;
+      }),
+      //ToDo modal to confirm delete 
+      switchMap(() => this.crudStore.deleteAccount(entity.id!)),
+      finalize(() => {
+        console.log(" finalize delete ");
+        this.search();
+      })
+    )
+    .subscribe();
+  }
+
+  alert(msg: string) {
+    this._snackBar.open(msg, 'Erro', {
+      horizontalPosition: "end",
+      verticalPosition: "top",
+      duration: 5000,
+    });
+
   }
 }

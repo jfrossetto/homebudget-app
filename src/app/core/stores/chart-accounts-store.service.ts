@@ -3,7 +3,7 @@ import { ChartAccountsService } from '../services/chart-accounts.service';
 import { FormDetails, FormMode, FormRequest } from '../models/form-details';
 import { IChartAccount } from '../models/chart-account.model';
 import { BehaviorSubject, Observable, of, pipe } from 'rxjs';
-import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, finalize, map, switchMap, tap } from 'rxjs/operators';
 import { EntitiesAutocomplete } from '../models/entities-autocomplete';
 import { SortDirection } from '@angular/material/sort';
 import { ListDetails } from '../models/list-details';
@@ -122,6 +122,36 @@ export class ChartAccountsStoreService {
 
   public findAutocomplete(search: string): Observable<IChartAccount[]> {
     return this.service.findAutocomplete({ search: search });
+  }
+
+  public nextCode(parentCode: string) {
+    this.service
+      .findNextCode(parentCode)
+      .pipe(
+        tap(nextCode => this._entitiesAutocomplete.next({...this.entitiesAutocomplete,
+                                                         nextCode: nextCode})
+        ))
+      .subscribe();
+  }
+
+  public validateDelete(id: string): Observable<any> {
+    return this.service.validateDelete(id);
+  }
+
+  public deleteAccount(id: string): Observable<boolean> {
+    return this.service.delete(id);
+    /*
+    this.service.delete(id).pipe(
+      filter(deleted => deleted),
+      switchMap(deleted => this.service.findAll(this.listDetails.lastPageSize, this.listDetails.lastPageIndex, 'code', 'asc')),
+      tap(data => {
+        console.log('total pages ', data.totalPages, ' items', data.totalItems);
+        this._listDetails.next({lastPageIndex: this.listDetails.lastPageIndex, lastPageSize: this.listDetails.lastPageSize,
+                                totalItens: data.totalItems, dataList: data.items});
+      })
+    )
+    .subscribe();
+    */
   }
 
 }

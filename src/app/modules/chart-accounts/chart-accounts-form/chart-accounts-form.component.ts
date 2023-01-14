@@ -1,8 +1,11 @@
+import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, SimpleChanges, OnChanges } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { ChartAccountsStoreService, EntitiesAutocomplete, FormDetails, FormMode, IChartAccount } from 'src/app/core';
+import { ValidAutocomplete } from 'src/app/core/functions/ValidAutocomplete';
+import { ChartAccountsValidators } from '../chart-accounts-validators';
 
 @Component({
   selector: 'app-chart-accounts-form',
@@ -18,8 +21,10 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
   @Output() gotoList = new EventEmitter<void>();
   
   form = this.formBuilder.group({
-    code:          ['', [Validators.required]],
-    parentCodeAc:  [''],
+    code:          ['', {validators: [Validators.required],
+                         asyncValidators: [ChartAccountsValidators.codeExists(this.crudStore)],
+                         updateOn: 'blur'}],
+    parentCodeAc:  ['', {validators: [ValidAutocomplete]}],
     description:   ['', [Validators.required]]
   });
 
@@ -50,17 +55,27 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
       if(this.formDetails.mode === FormMode.add) {
         console.log("ngOnChanges add");
         this.form.reset();
+        this.form.controls['code'].enable();
         this.form.controls['parentCodeAc'].setValue('');
         return;
       }
       console.log("ngOnChanges edit");        
       this.form.patchValue(this.formDetails.entity);
+      this.form.controls['code'].disable();
     }
     if (changes.entitiesAutocomplete && changes.entitiesAutocomplete.currentValue) {
-      console.log("ngOnChanges entitiesAutocomplete");
-      this.form.controls['parentCodeAc']
-        .setValue({code: this.entitiesAutocomplete.account?.code,
-                   description: this.entitiesAutocomplete.account?.description});
+      if (this.entitiesAutocomplete.account) {
+        console.log("ngOnChanges entitiesAutocomplete");
+        this.form.controls['parentCodeAc']
+          .setValue({
+            code: this.entitiesAutocomplete.account?.code,
+            description: this.entitiesAutocomplete.account?.description
+          });
+      }
+      if(this.entitiesAutocomplete.nextCode) {
+        console.log("ngOnChanges nextCode")
+        this.form.get('code')?.setValue(this.entitiesAutocomplete.nextCode);
+      }                   
     }
   }
 
@@ -91,4 +106,19 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
   selectedOption(event: any) {
     console.log(" parent selected ", event.option.value.code, event);
   }
+
+  editCode() {
+    console.log("editCode");
+    this.form.controls['code'].enable();
+  }
+
+  nextCode() {
+    if (this.formDetails.mode === FormMode.add) {
+      console.log("nextCode parentCode", this.form.get('parentCodeAc')?.value.code);
+      this.crudStore.nextCode(this.form.get('parentCodeAc')?.value.code)
+      return;
+    }
+    this.form.get('code')?.setValue(this.formDetails.entity.code);
+  }
+
 }

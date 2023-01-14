@@ -19,18 +19,28 @@
             <mat-label>Conta Pai</mat-label>
             <input matInput formControlName="parentCodeAc" name="parentCode" type="text" [matAutocomplete]="acParentCode" />
             <mat-autocomplete #acParentCode="matAutocomplete" [displayWith]="displayAutocomplete"
-              (optionSelected)="selectedOption($event)">
+                              (optionSelected)="selectedOption($event)">
               <mat-option *ngFor="let option of optionsParentCode$ | async" [value]="option">
                 <small>{{option.code}}-{{option.description}}</small>
               </mat-option>
             </mat-autocomplete>
+            <mat-error *ngIf="form.controls['parentCodeAc'].hasError('notMatch')">Selecione um códgio válido</mat-error>
           </mat-form-field>
         </div>
 
         <div class="col-2">
           <mat-form-field>
             <mat-label>Conta</mat-label>
-            <input matInput formControlName="code" name="code" required />
+            <input matInput formControlName="code" name="code" />
+            <button mat-icon-button matSuffix (click)="editCode()" [attr.aria-label]="'Edit'" matTooltip="Editar"
+                    *ngIf="form.get('code')?.disabled">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button matSuffix (click)="nextCode()" [attr.aria-label]="'nextCode'" matTooltip="Próximo código" 
+                    *ngIf="form.get('code')?.enabled">
+              <mat-icon>refresh</mat-icon>
+            </button>
+            <mat-error *ngIf="form.controls['code'].hasError('codeExists')">Codigo já existe</mat-error>
             <mat-error *ngIf="form.controls['code'].hasError('required')">Codigo obrigatório</mat-error>
           </mat-form-field>
         </div>
