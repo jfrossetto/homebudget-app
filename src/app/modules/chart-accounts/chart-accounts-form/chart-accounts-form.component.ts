@@ -1,6 +1,6 @@
 import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, SimpleChanges, OnChanges } from '@angular/core';
-import { FormBuilder, FormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormsModule, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { ChartAccountsStoreService, EntitiesAutocomplete, FormDetails, FormMode, IChartAccount } from 'src/app/core';
@@ -21,8 +21,8 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
   @Output() gotoList = new EventEmitter<void>();
   
   form = this.formBuilder.group({
+    id: [''],
     code:          ['', {validators: [Validators.required],
-                         asyncValidators: [ChartAccountsValidators.codeExists(this.crudStore)],
                          updateOn: 'blur'}],
     parentCodeAc:  ['', {validators: [ValidAutocomplete]}],
     description:   ['', [Validators.required]]
@@ -48,12 +48,14 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
         return of([{...val}]);
       })
     );
+    this.setFormValidators();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.formDetails && changes.formDetails.currentValue) {
       if(this.formDetails.mode === FormMode.add) {
         console.log("ngOnChanges add");
+        console.log(" id: ", this.formDetails.entity.id)
         this.form.reset();
         this.form.controls['code'].enable();
         this.form.controls['parentCodeAc'].setValue('');
@@ -77,6 +79,11 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
         this.form.get('code')?.setValue(this.entitiesAutocomplete.nextCode);
       }                   
     }
+  }
+
+  private setFormValidators() {
+    this.form.get('code')?.setAsyncValidators([ChartAccountsValidators.codeExists(this.crudStore, 
+                                                                                  this.accountId)]);
   }
 
   goList(): void {
@@ -119,6 +126,10 @@ export class ChartAccountsFormComponent implements OnInit, OnChanges {
       return;
     }
     this.form.get('code')?.setValue(this.formDetails.entity.code);
+  }
+
+  private get accountId() : AbstractControl {
+    return this.form.controls['id'];
   }
 
 }

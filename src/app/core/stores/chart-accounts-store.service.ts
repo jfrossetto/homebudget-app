@@ -140,18 +140,10 @@ export class ChartAccountsStoreService {
 
   public deleteAccount(id: string): Observable<boolean> {
     return this.service.delete(id);
-    /*
-    this.service.delete(id).pipe(
-      filter(deleted => deleted),
-      switchMap(deleted => this.service.findAll(this.listDetails.lastPageSize, this.listDetails.lastPageIndex, 'code', 'asc')),
-      tap(data => {
-        console.log('total pages ', data.totalPages, ' items', data.totalItems);
-        this._listDetails.next({lastPageIndex: this.listDetails.lastPageIndex, lastPageSize: this.listDetails.lastPageSize,
-                                totalItens: data.totalItems, dataList: data.items});
-      })
-    )
-    .subscribe();
-    */
+  }
+
+  public codeExists(code: string, id?: string): Observable<boolean> {
+    return this.service.codeExists(code, id);
   }
 
 }
