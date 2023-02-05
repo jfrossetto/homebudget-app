@@ -1,4 +1,127 @@
-/* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.flex-spacer {
+    flex: 1 1 auto;
+}
+
+.list-container {
+    position: relative;
+    display: block;
+}
+
+.table-container {
+    margin: 0px;
+    padding: 16px 16px;
+    position: relative;
+    height: calc(100vh - 250px);
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+}
+
+.paginator-table {
+    position: relative;
+    top: 0;
+    left: 0;
+    padding: 16px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.list-footer {
+    position: fixed;
+    bottom: 0;
+    left: 16px;
+    right: 16px;
+    display: block;
+    z-index: 999;
+}
+
+.action-column {
+    flex: 0.2 0.2 0%;
+}
+
+.form-container {
+    position: relative;
+    display: flex;
+    margin: 0px;
+    padding: 16px 16px;
+    height: calc(100vh - 250px);
+    overflow: auto;
+}
+
+.flex-row {
+    display: flex;
+    flex-wrap: wrap;   
+}
+
+.mat-form-field {
+    display: inherit !important;
+    font-size: 16px;
+}
+
+//.mat-form-field-label-wrapper ~ .mat-input-element:disabled {
+//    background: rgba(0,0,0,.10);    
+//}
+
+/*
+.mat-input-element:disabled {
+    color: rgba(0,0,0,.70);
+}
+
+.mat-input-element:disabled ~ .mat-form-field-label-wrapper {
+    background: rgba(0,0,0,.10);    
+}
+*/
+
+.col-2 {
+    flex: 0 0 22.5%;
+    max-width: 22.5%;
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.col-4 {
+    flex: 0 0 47%;
+    max-width: 47%;
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.form-footer {
+    position: fixed;
+    bottom: 0;
+    left: 16px;
+    right: 16px;
+    background-color: #fff;
+    border-top: 1px solid #d0d0d0;
+    z-index: 101;
+    transition: .3s;
+    margin: 16px;
+}
+
+.justify-space-between {
+    justify-content: space-between;
+    margin-top: 16px;
+}
+
+.loading-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 56px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+

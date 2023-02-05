@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { IChartAccount } from 'src/app/core';
+import { FormDetails, FormRequest, IChartAccount, EntitiesAutocomplete, ListDetails } from 'src/app/core';
 
 @Component({
   selector: 'app-chart-accounts-ui',
@@ -9,9 +9,12 @@ import { IChartAccount } from 'src/app/core';
 export class ChartAccountsUiComponent implements OnInit {
 
   @Input() public crudMode: string;
-  @Input() public dataList: IChartAccount[];
+  @Input() public listDetails: ListDetails<IChartAccount>;
+  @Input() public formDetails: FormDetails<IChartAccount>;
+  @Input() public entitiesAutocomplete: EntitiesAutocomplete;
+  @Input() public loading: boolean;
 
-  @Output() gotoForm = new EventEmitter<void>();
+  @Output() gotoForm = new EventEmitter<FormRequest<string>>();
   @Output() gotoList = new EventEmitter<void>();
 
   constructor() {   }

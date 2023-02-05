@@ -6,6 +6,7 @@ import { ChartAccountsUiComponent } from './chart-accounts-ui/chart-accounts-ui.
 import { ChartAccountsListComponent } from './chart-accounts-list/chart-accounts-list.component';
 import { ChartAccountsFormComponent } from './chart-accounts-form/chart-accounts-form.component';
 import { AngularMaterialModule } from  '../../shared/angular-material/angular-material.module';
+import { ShareModuleModule } from 'src/app/shared/share-module/share-module.module';
 
 const routes: Routes = [
   { path: '', component: ChartAccountsContainerComponent }
@@ -16,6 +17,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     AngularMaterialModule,
+    ShareModuleModule,
     RouterModule.forChild(routes)
   ]
 })

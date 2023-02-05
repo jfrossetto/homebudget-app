@@ -1,6 +1,11 @@
-<p>chart-accounts-container works!</p>
 <app-chart-accounts-ui [crudMode]="crudMode$ | async"
-                       [dataList]="dataList$ | async"
-                       (gotoForm)="gotoForm()"
+                       [listDetails]="listDetails$ | async"
+                       [formDetails]="formDetails$ | async"
+                       [entitiesAutocomplete]="entitiesAutocomplete$ | async"
+                       [loading]="loading$ | async"
+                       (gotoForm)="gotoForm($event)"
                        (gotoList)="gotoList()">
 </app-chart-accounts-ui>
+<!--
+    <p>chart-accounts-container works!</p>
+-->

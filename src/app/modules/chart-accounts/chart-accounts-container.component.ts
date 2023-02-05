@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ChartAccountsStoreService } from '../../core';
+import { ChartAccountsStoreService, FormRequest } from '../../core';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -11,20 +11,25 @@ import { Observable } from 'rxjs';
 export class ChartAccountsContainerComponent implements OnInit {
   
   crudMode$: Observable<any>;
-  dataList$: Observable<any>;
+  listDetails$: Observable<any>;
+  formDetails$: Observable<any>;
+  entitiesAutocomplete$: Observable<any>;
+  loading$: Observable<any>;
 
   constructor(private crudStore: ChartAccountsStoreService) { 
     this.crudMode$ = this.crudStore.crudMode$;
-    this.dataList$ = this.crudStore.dataList$;    
+    this.listDetails$ = this.crudStore.listDetails$;
+    this.formDetails$ = this.crudStore.formDetails$;
+    this.entitiesAutocomplete$ = this.crudStore.entitiesAutocomplete$;
+    this.loading$ = this.crudStore.loading$;
   }
 
   ngOnInit(): void {
-    this.crudStore.gotoList();
-    //this.crudStore.search(3, 0);
+    this.gotoList();
   }
 
-  gotoForm() {
-    this.crudStore.gotoForm();
+  gotoForm(request: FormRequest<string>) {
+    this.crudStore.gotoForm(request);
   }
 
   gotoList() {
